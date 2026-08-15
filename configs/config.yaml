@@ -1,0 +1,68 @@
+app:
+  name: ai-orchestra
+  working_dir: "."
+  log_level: info
+
+agents:
+  claudinho-caro:
+    binary: claude
+    model: claude-opus-5
+    timeout: 5m
+    output_format: json
+    interactive: true
+    approval_mode: manual
+  claudinho-barato:
+    binary: claude
+    model: claude-haiku-4-5-20251001
+    timeout: 5m
+    output_format: json
+    interactive: true
+    approval_mode: manual
+  codex:
+    binary: codex
+    model: gpt-5.6
+    timeout: 10m
+    output_format: json
+    interactive: true
+    approval_mode: manual
+
+workflow:
+  stages:
+    - name: planing
+      agent: claudinho-caro
+      role: planner
+    - name: execution
+      agent: codex
+      role: executor
+    - name: review
+      agent: claudinho-barato
+      role: reviewer
+  approval:
+    before_planning: true
+    before_execution: true
+    before_review: true
+    show_diff: true
+  retry:
+    max_attempts: 3
+    delay: 5s
+    backoff: exponential
+
+skills:
+  directories:
+    - ./configs/skills
+    - ~/.ai-orchestra/skills
+
+prompts:
+  directories:
+    - ./configs/prompts
+
+state:
+  directory: ./.ai-orchestra
+  save_history: true
+  save_plans: true
+
+logging:
+  directory: ./logs
+  format: text
+  level: info
+

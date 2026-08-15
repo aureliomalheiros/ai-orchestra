@@ -50,15 +50,15 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Build vigil binary
+      - name: Build ai-orchestra binary
         run: |
           mkdir -p build
-          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o build/vigil .
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o build/ai-orchestra .
 
       - name: Upload Linux binary to release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.tag_version.outputs.new_tag }}
-          files: build/vigil
+          files: build/ai-orchestra
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
